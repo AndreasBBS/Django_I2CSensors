@@ -24,7 +24,7 @@ Open (workspace)/(DjangoProject)/(DjangoProject)/settings.py, find:
 INSTALLED_APPS = [ ... ] , add:
 -'rest_framework'
 -'django_filters'
--'I2CSensors'
+-'Django_I2CSensors'
 ```
 
 Open terminal on (workspace)/(DjangoProject), run:
