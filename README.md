@@ -21,11 +21,19 @@ git clone (thisRepoURL.git)
 
 Open (workspace)/(DjangoProject)/(DjangoProject)/settings.py, find:
 ```
-INSTALLED_APPS = [ ... ] , add:
+INSTALLED_APPS = [ ... ], add:
 -'rest_framework'
 -'django_filters'
 -'Django_I2CSensors'
 ```
+In the same folder, open urls.py, find:
+```
+urlpatterns = [ ... ], add:
+-path('I2CSensors', include('Django_I2CSensors.urls'))
+
+(Don't forget to import the include function from django.urls if you're not already)
+```
+
 
 Open terminal on (workspace)/(DjangoProject), run:
 ```
