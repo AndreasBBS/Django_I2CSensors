@@ -4,6 +4,7 @@ Django backend App with REST API (djangorestframework) to run on RaspberryPi and
 ## Requirements
 ```
 pip3 install django djangorestframework django-filter
+
 ```
 
 ### Pre Installing (Skip if you already created your Django Proj)
