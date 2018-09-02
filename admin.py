@@ -1,5 +1,6 @@
 from django.contrib import admin
 
-from .models import Sensor
+from Django_I2CSensors.models.models import Command, I2CSensor
 
-admin.site.register(Sensor)
+admin.site.register(I2CSensor)
+admin.site.register(Command)

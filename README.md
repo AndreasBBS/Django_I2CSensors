@@ -38,7 +38,7 @@ urlpatterns = [ ... ], add:
 
 Open terminal on (workspace)/(DjangoProject), run:
 ```
-python3 manage.py makemigrations
+python3 manage.py makemigrations Django_I2CSensors
 
 python3 manage.py migrate
 ```

@@ -1,48 +1,95 @@
-from django.db import models
+import uuid
 
-class I2CSensor(models.Model):
-    # latestReading = models.ForeignKey(Reading, on_delete=models.CASCADE)
-    # commands = 
-    # bus = 
-    # connected = models.Boolean(isBusConnected())
-    # historyReadings = models.Foreignkey(ReadingCointainer, on_delete=models.CASCADE)
-    # type = models.CharField(max_length = 30)
-    # name = models.CharField(max_length = 126)
-    # (optional fields)
-    # shortDescription = models.CharField(max_length = 254) 
-    # reference = models.CharField(max_length = 30)
-    address = models.CharField(
-        max_length = 4
+from django.db.models import IntegerField, DateTimeField, UUIDField, PositiveSmallIntegerField, Model, \
+    PositiveIntegerField, ManyToManyField, TextField, ForeignKey, CASCADE, CharField
+from django.core.validators import MaxValueValidator, MinValueValidator
+
+
+class Command(Model):
+    id = UUIDField(
+        default=uuid.uuid4,
+        primary_key=True,
+        editable=False,
+        null=False
     )
 
-    ## functions
+    code = PositiveSmallIntegerField(
+        validators=[
+            MaxValueValidator(2**10-1),
+            MinValueValidator(0)
+        ],
+        blank=False,
+        null=False
+    )
+
+    description = TextField()
+
+    def __str__(self):
+        return f'{self.code}'
+
+
+class I2CSensor(Model):
+    id = UUIDField(
+        default=uuid.uuid4,
+        primary_key=True,
+        editable=False,
+        null=False,
+    )
+    address = PositiveSmallIntegerField(
+        validators=[
+            MaxValueValidator(2**10-1),
+            MinValueValidator(0)
+        ],
+        blank=False
+    )
+    startUpTime = PositiveIntegerField(
+        blank=False,
+        default=0
+    )
+    commands = ManyToManyField(Command)
+    # bus = Channel()
+
+    # NamedI2CSensor(I2CSensor):
+    # name = CharField(max_length=30)
+    # reference = models.CharField(max_length = 30)
+    # type = models.CharField(max_length = 30)
+    # shortDescription = models.CharField(max_length = 254)
 
     # OVERRIDE
     def __str__(self):
-        return self.address
+        return f'{self.address}'
 
-class Reading(models.Model):
-    timeStamp = models.DateTimeField(
-        default = models.datetime.datetime.now,
-        editable = False
+
+class Reading(Model):
+    id = UUIDField(
+        default=uuid.uuid4,
+        primary_key=True,
+        editable=False,
+        null=False
     )
 
-    rawMeasurement = models.IntegerField(
-        editable = False
+    time_stamp = DateTimeField(
+        auto_now_add=True,
+        editable=False
+    )
+
+    raw_measurement = IntegerField(
+        editable=False
+    )
+
+    sensor = ForeignKey(
+        I2CSensor,
+        on_delete=CASCADE
     )
 
     def accept(self, visitor):
         visitor.visit(self)
-    
+
     # OVERRIDE
     def __str__(self):
-        return self.rawMeasurement + ' : ' + self.timeStamp
+        return f'{self.raw_measurement} : {self.time_stamp}'
 
-    def getAttributesDictionary(self):
+    def get_attributes_dictionary(self):
         return {
-            self.__class__.__name__ : (self.rawMeasurement, self.timeStamp), 
-            }
-
-class ReadingContainer(models.Model):
-    # readings = model.ManytoMany(Reading, on_delete=models.CASCADE)
-    pass
+            self.__class__.__name__ : (self.id, self.time_stamp, self.raw_measurement)
+        }
